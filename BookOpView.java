@@ -1,10 +1,6 @@
 import javax.swing.*;
-import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 public class BookOpView extends JFrame {
     private JTextField txtBookName = new JTextField(20);
