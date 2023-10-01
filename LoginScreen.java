@@ -1,6 +1,8 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,7 +18,7 @@ public class LoginScreen extends JFrame implements ActionListener{
     public JButton getBtnLogin() {
         return btnLogin;
     }
-    // private User user = new User();
+    private User user = new User();
 
     public LoginScreen() {
         this.setSize(300, 150);
@@ -44,15 +46,21 @@ public class LoginScreen extends JFrame implements ActionListener{
             String username = txtUserName.getText().trim();
             String password = txtPassword.getText().trim();
             // System.out.print(username);
-            // user = Application.getInstance().getDataAdapter().loadUser(username, password);
-            // if (user == null) {
-            //     JOptionPane.showMessageDialog(null, "This user does not exist!");
-            // } else {
-            //     Application.getInstance().setCurrentUser(user);
-            //     this.setVisible(false);
-            //     Application.getInstance().getMainScreen().setVisible(true);
-            // }
-            if(username.equals("admin") && password.equals("password"))
+            user = Application.getInstance().getDataAdapter().loadUser(username, password);
+            if (user == null) {
+                 JOptionPane.showMessageDialog(null, "This user does not exist!");
+            }
+            else if (username.equals("admin") && password.equals("password"))
+            {
+                this.dispose();
+                Application.getInstance().getAdminView().setVisible(true);
+            }
+            else {
+                 Application.getInstance().setCurrentUser(user);
+                 this.setVisible(false);
+                 Application.getInstance().getMainScreen().setVisible(true);
+             }
+            /*if(username.equals("admin") && password.equals("password"))
             {
                 // System.out.print("1");
                 this.dispose();
@@ -63,7 +71,7 @@ public class LoginScreen extends JFrame implements ActionListener{
                 // System.out.print("2");
                 this.dispose();
                 Application.getInstance().getMainScreen().setVisible(true);
-            }
+            }*/
         }
     }
 }

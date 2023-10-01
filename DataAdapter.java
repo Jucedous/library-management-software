@@ -14,14 +14,14 @@ public class DataAdapter {
     public User loadUser(String username, String password) {
         try {
 
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Users WHERE UserName = ? AND Password = ?");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE UserName = ? AND Password = ?");
             statement.setString(1, username);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User user = new User();
                 user.setUsername(resultSet.getString("username"));
-                user.setPassword(resultSet.getString("Password_hash"));
+                user.setPassword(resultSet.getString("Password"));
                 resultSet.close();
                 statement.close();
 
