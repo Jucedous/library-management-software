@@ -1,8 +1,12 @@
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class LendListView extends JFrame {
     private JButton btnReturn = new JButton("Return");
@@ -36,7 +40,7 @@ public class LendListView extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             Application.getInstance().getLendListView().dispose();
-            Application.getInstance().getAdminView().setVisible(true);            
+            Application.getInstance().getAdminView().setVisible(true);
         }
         });
 

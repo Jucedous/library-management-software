@@ -57,6 +57,7 @@ public class LoginScreen extends JFrame implements ActionListener{
             else {
                 Application.getInstance().setCurrentUser(user);
                 Application.getInstance().getPersonal_Information_View().setUserInfo(user.getUsername());
+                Application.getInstance().getStatusView().setusername(user.getUsername());
                 this.setVisible(false);
                 Application.getInstance().getMainScreen().setVisible(true);
             }

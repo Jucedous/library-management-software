@@ -185,9 +185,42 @@ public class DataAdapter {
                 PreparedStatement statement = connection.prepareStatement("SELECT LendList.StudentID, Student.StudentName, LendList.BookName, LendList.BorrowDate, LendList.ReturnDate FROM LendList INNER JOIN Student ON LendList.StudentID = Student.StudentID");
                 ResultSet resultSet = statement.executeQuery();
                 
-                if(!resultSet.isBeforeFirst())
-                {
-                    
+                if(!resultSet.isBeforeFirst()) {
+                    return null;
+                }
+                ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+                int columnsNumber = resultSetMetaData.getColumnCount();
+                for (int i = 1; i <= columnsNumber; i++) {
+                    model.addColumn(resultSetMetaData.getColumnName(i));
+                }
+                while (resultSet.next()) {
+                    Object[] row = new Object[columnsNumber];
+                    for (int i = 1; i <= columnsNumber; i++) {
+                        row[i - 1] = resultSet.getObject(i);
+                        // System.out.println(row[3]);
+                    }
+                model.addRow(row);
+                }
+                return model;
+
+        } catch (SQLException e) {
+            System.out.println("Database access error!");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public DefaultTableModel returnBorrowList(String username) {
+        // System.out.println("1");
+        try {
+                // String query = "SELECT * FROM LendList";
+                
+                DefaultTableModel model = new DefaultTableModel();
+                PreparedStatement statement = connection.prepareStatement("SELECT LendList.StudentID, Student.StudentName, LendList.BookName, LendList.BorrowDate, LendList.ReturnDate FROM LendList FROM LendList WHERE Student.StudentName = ?");
+                statement.setString(1, username);
+                ResultSet resultSet = statement.executeQuery();
+                
+                if(!resultSet.isBeforeFirst()) {
                     return null;
                 }
                 ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
