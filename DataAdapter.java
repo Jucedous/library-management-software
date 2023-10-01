@@ -1,4 +1,8 @@
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import javax.swing.table.DefaultTableModel;
 
 public class DataAdapter {
@@ -7,28 +11,112 @@ public class DataAdapter {
         this.connection = connection;
     }
 
-    public boolean submitBookOp(LendList ld) {
+    public User loadUser(String username, String password) {
         try {
-                PreparedStatement statement = connection.prepareStatement("INSERT INTO LendList VALUES (?, ?, ?, ?, ?)");
-                statement.setString(1, ld.getBookName());
-                statement.setString(2, ld.getStudentID());
-                statement.setString(3, ld.getBorrowDate());
-                statement.setString(4, ld.getReturnDate());
 
-                statement.execute();    // commit to the database;
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM Users WHERE UserName = ? AND Password = ?");
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                User user = new User();
+                user.setUsername(resultSet.getString("username"));
+                user.setPassword(resultSet.getString("Password_hash"));
+                resultSet.close();
                 statement.close();
-                return true; // save successfully!
+
+                return user;
+            }
+
         } catch (SQLException e) {
             System.out.println("Database access error!");
             e.printStackTrace();
-            return false;
         }
+        return null;
     }
 
-    public boolean checkBookName(String bookName) {
-        try {
-                String query = "SELECT * FROM Books WHERE BookName = " + bookName;
+    public boolean submitBookOp(LendList ld) {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if(ld.getBorrowDate() != null)
+        {
+            Date borrowDate;
+            try {
+                borrowDate = new java.sql.Date(dateFormat.parse(ld.getBorrowDate()).getTime());
+            }
+            catch (ParseException p) {
+                System.out.println("Date parsing error!");
+                p.printStackTrace();
+                return false;
+            }   
+            // System.out.println(borrowDate);
+            Date expectedReturDate = sqlDatePlusDays(borrowDate, 90);
+            try {
+                PreparedStatement statement = connection.prepareStatement("INSERT INTO LendList VALUES (?, ?, ?, ?, ?)");
+                statement.setString(2, ld.getBookName());
+                statement.setString(1, ld.getStudentID());
+                statement.setDate(3, borrowDate);
+                statement.setDate(4, null);
+                statement.setDate(5, expectedReturDate);
 
+                statement.execute();    // commit to the database;
+                statement.close();
+
+                PreparedStatement statement2 = connection.prepareStatement("UPDATE Book SET Availability = 'Unavailable' WHERE BookName = ?");
+                statement2.setString(1, ld.getBookName());
+
+                statement2.execute();    // commit to the database;
+                statement2.close();
+                return true; // save successfully!
+            } catch (SQLException e) {
+                System.out.println("Database access error!");
+                e.printStackTrace();
+                return false;
+            }
+            
+        }
+        if(ld.getReturnDate() != null)
+        {
+            Date returnDate;
+            try {
+                returnDate = new java.sql.Date(dateFormat.parse(ld.getReturnDate()).getTime());
+            }
+            catch (ParseException p) {
+                System.out.println("Date parsing error!");
+                p.printStackTrace();
+                return false;
+            }
+            // System.out.println(returnDate);
+            try {
+                PreparedStatement statement = connection.prepareStatement("UPDATE LendList SET ReturnDate = ? WHERE StudentID = ?");
+                statement.setDate(1, returnDate);
+                statement.setString(2, ld.getStudentID());
+
+                statement.execute();    // commit to the database;
+                statement.close();
+
+                PreparedStatement statement2 = connection.prepareStatement("UPDATE Book SET Availability = 'Available' WHERE BookName = ?");
+                statement2.setString(1, ld.getBookName());
+
+                statement2.execute();    // commit to the database;
+                statement2.close();
+                return true; // save successfully!
+            } catch (SQLException e) {
+                System.out.println("Database access error!");
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private Date sqlDatePlusDays(Date date, int days) {
+            return Date.valueOf(date.toLocalDate().plusDays(days));
+    }
+
+    public boolean checkBookName(String bookName, boolean bDate, boolean rDate) {
+        try {
+                String query = "SELECT * FROM Book WHERE BookName = '" + bookName + "'";
+                if(!bDate) query += " AND Availability = 'Available'";
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query);
                 if(!resultSet.isBeforeFirst())
@@ -42,11 +130,12 @@ public class DataAdapter {
             e.printStackTrace();
             return false;
         }
+
     }
 
     public boolean checkStudentID(String studentID) {
         try {
-                String query = "SELECT * FROM Students WHERE StudentID = " + studentID;
+                String query = "SELECT * FROM Student WHERE StudentID = " + studentID;
 
                 Statement statement = connection.createStatement();
                 ResultSet resultSet = statement.executeQuery(query);
@@ -86,7 +175,7 @@ public class DataAdapter {
                     Object[] row = new Object[columnsNumber];
                     for (int i = 1; i <= columnsNumber; i++) {
                         row[i - 1] = resultSet.getObject(i);
-                        System.out.println(row[3]);
+                        // System.out.println(row[3]);
                     }
                 model.addRow(row);
                 }
@@ -100,10 +189,7 @@ public class DataAdapter {
     }
 
     public DefaultTableModel returnBookList() {
-        // System.out.println("1");
-        try {
-                // String query = "SELECT * FROM LendList";
-                
+        try {                
                 DefaultTableModel model = new DefaultTableModel();
                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM Book");
                 ResultSet resultSet = statement.executeQuery();
@@ -136,9 +222,7 @@ public class DataAdapter {
     }
 
     public DefaultTableModel returnShelfList() {
-        // System.out.println("1");
         try {
-                // String query = "SELECT * FROM LendList";
                 
                 DefaultTableModel model = new DefaultTableModel();
                 PreparedStatement statement = connection.prepareStatement("SELECT * FROM Shelf WHERE ShelfAvailability = 'Available'");
@@ -193,7 +277,7 @@ public class DataAdapter {
 
                 statement.execute();    // commit to the database;
                 statement.close();
-                return true; // book added successfully!
+                return true; // book deleted successfully!
         } catch (SQLException e) {
             System.out.println("Database access error!");
             e.printStackTrace();

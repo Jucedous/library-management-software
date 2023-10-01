@@ -3,6 +3,7 @@ public class LendList {
     private String studentID;
     private String borrowDate;
     private String returnDate;
+    private String expectedReturnDate;
 
     public String getBookName() {
         return bookName;
@@ -20,6 +21,10 @@ public class LendList {
         return returnDate;
     }
 
+    public String getExpectedReturnDate() {
+        return expectedReturnDate;
+    }
+    
     public void setBookName(String bookName) {
         this.bookName = bookName;
     }
@@ -34,5 +39,9 @@ public class LendList {
 
     public void setReturnDate(String rDate) {
         this.returnDate = rDate;
+    }
+
+    public void setExpectedReturnDate(String erDate) {
+        this.expectedReturnDate = erDate;
     }
 }

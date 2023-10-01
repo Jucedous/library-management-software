@@ -31,7 +31,32 @@ public class Application {
     public BookModView bookModView = new BookModView();
     public BookListView bookListView = new BookListView();
     public ShelfListView shelfListView = new ShelfListView();
-    
+    public MainScreen mainScreen = new MainScreen();
+    public SearchView Search = new SearchView();
+    public StatusView Status = new StatusView();
+    public Personal_Information_View Personal_Information = new Personal_Information_View();
+    public Search_ResultView Search_Result = new Search_ResultView();
+
+    public SearchView getSearchView() {
+        return Search;
+    }
+
+    public StatusView getStatusView() {
+        return Status;
+    }
+
+    public Personal_Information_View getPersonal_Information_View() {
+        return Personal_Information;
+    }    
+
+    public Search_ResultView getSearch_ResultView() {
+        return Search_Result;
+    }
+
+    public MainScreen getMainScreen() {
+        return mainScreen;
+    }
+
     public LoginScreen getLoginScreen() {
         return loginScreen;
     }
@@ -95,7 +120,7 @@ public class Application {
 
 
     public static void main(String[] args) {
-        // Application.getInstance().getLoginScreen().setVisible(true);
-        Application.getInstance().getAdminView().setVisible(true);
+        Application.getInstance().getLoginScreen().setVisible(true);
+        // Application.getInstance().getAdminView().setVisible(true);
     }
 }

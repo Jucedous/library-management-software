@@ -7,7 +7,7 @@ public class BookModView extends JFrame implements ActionListener {
     private JButton btnAdd = new JButton("Add");
     private JButton btnDelete = new JButton("Delete");
     private JTextField txtBookName = new JTextField(20);
-    private Book book;
+    private Book book = new Book();
 
     public BookModView() {
         this.setSize(300, 150);

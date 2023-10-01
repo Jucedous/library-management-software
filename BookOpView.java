@@ -1,6 +1,10 @@
 import javax.swing.*;
+import java.sql.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class BookOpView extends JFrame {
     private JTextField txtBookName = new JTextField(20);
@@ -11,7 +15,7 @@ public class BookOpView extends JFrame {
     private JButton btnReturn = new JButton("Return");
     private JButton btnSubmit = new JButton("Submit");
 
-    private LendList lendList;
+    private LendList lendList = new LendList();
 
     public JButton getBtnReturn() {
         return btnReturn;
@@ -61,10 +65,7 @@ public class BookOpView extends JFrame {
         this.getContentPane().add(main);
         panelButton.add(btnReturn);
         panelButton.add(btnSubmit);
-        // btnReturn.setBounds(100,100, 100, 100);;
         this.getContentPane().add(panelButton);
-        // this.getContentPane().add(btnReturn);
-        // this.getContentPane().add(btnSubmit);
 
         btnReturn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -82,10 +83,10 @@ public class BookOpView extends JFrame {
     private void checkInfo() {
         String bName = txtBookName.getText().trim();
         String sID = txtStudentID.getText().trim();
-
-        if(!Application.getInstance().getDataAdapter().checkBookName(bName))
+        
+        if(!Application.getInstance().getDataAdapter().checkBookName(bName, txtBorrowDate.getText().isEmpty(), txtReturnDate.getText().isEmpty()))
         {
-            JOptionPane.showMessageDialog(null, "Invalid Book Name!");
+            JOptionPane.showMessageDialog(null, "Invalid Book Name or Book is unavailable!");
             return;
         }
 
@@ -94,11 +95,29 @@ public class BookOpView extends JFrame {
             JOptionPane.showMessageDialog(null, "Invalid Student ID!");
             return;
         }
+        String bDate = txtBorrowDate.getText().trim();
+        String rDate = txtReturnDate.getText().trim();
 
+        // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("YYYY-MM-DD", Locale.ENGLISH);
+        
         lendList.setBookName(bName);
         lendList.setStudentID(txtStudentID.getText().trim());
-        lendList.setBorrowDate(txtBorrowDate.getText().trim());
-        lendList.setReturnDate(txtReturnDate.getText().trim());
+        if(!txtBorrowDate.getText().isEmpty() && !txtReturnDate.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Conflicting Operation!");
+            return;
+        }
+        if(!txtBorrowDate.getText().isEmpty())
+        {
+            lendList.setBorrowDate(bDate);
+            lendList.setReturnDate(null);
+        }
+        if(!txtReturnDate.getText().isEmpty())
+        {
+            lendList.setReturnDate(rDate);
+            lendList.setBorrowDate(null);
+        }
+        
+    
 
         Application.getInstance().getDataAdapter().submitBookOp(lendList);
         JOptionPane.showMessageDialog(null, "Book borrowed/returned successfully!");
