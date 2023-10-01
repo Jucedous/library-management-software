@@ -20,6 +20,42 @@ public class Application {
 
     public User getCurrentUser() { return currentUser; }
 
+
+    private MainScreen mainScreen = new MainScreen();
+
+    public MainScreen getMainScreen() {
+        return mainScreen;
+    }
+
+
+    private SearchView Search = new SearchView();
+
+    public SearchView getSearchView() {
+        return Search;
+    }
+
+    private StatusView Status = new StatusView();
+
+    public StatusView getStatusView() {
+        return Status;
+    }
+
+    private Personal_Information_View Personal_Information = new Personal_Information_View();
+
+    public Personal_Information_View getPersonal_Information_View() {
+        return Personal_Information;
+    }
+
+    private Search_ResultView Search_Result = new Search_ResultView();
+
+    public Search_ResultView getSearch_ResultView() {
+        return Search_Result;
+    }
+
+    public DataAdapter getDataAdapter() {
+        return dataAdapter;
+    }
+
     public void setCurrentUser(User user) {
         this.currentUser = user;
     }

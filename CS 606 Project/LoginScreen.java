@@ -38,6 +38,19 @@ public class LoginScreen extends JFrame implements ActionListener{
         this.getBtnLogin().addActionListener(this);
     }
     public void actionPerformed(ActionEvent e) {
-        return;
+        if (e.getSource() == btnLogin) {
+            // String username = txtUserName.getText().trim();
+            // String password = txtPassword.getText().trim();
+            // User user = Application.getInstance().getDataAdapter().loadUser(username, password);
+            // if (user == null) {
+            //     JOptionPane.showMessageDialog(null, "This user does not exist!");
+            // } else {
+            //     Application.getInstance().setCurrentUser(user);
+            //     this.setVisible(false);
+            //     Application.getInstance().getMainScreen().setVisible(true);
+            // }
+            this.setVisible(false);
+            Application.getInstance().getMainScreen().setVisible(true);
+        }
     }
 }
