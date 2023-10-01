@@ -5,6 +5,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -39,18 +40,18 @@ public class LoginScreen extends JFrame implements ActionListener{
     }
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btnLogin) {
-            // String username = txtUserName.getText().trim();
-            // String password = txtPassword.getText().trim();
-            // User user = Application.getInstance().getDataAdapter().loadUser(username, password);
-            // if (user == null) {
-            //     JOptionPane.showMessageDialog(null, "This user does not exist!");
-            // } else {
-            //     Application.getInstance().setCurrentUser(user);
-            //     this.setVisible(false);
-            //     Application.getInstance().getMainScreen().setVisible(true);
-            // }
-            this.setVisible(false);
-            Application.getInstance().getMainScreen().setVisible(true);
+            String username = txtUserName.getText().trim();
+            String password = txtPassword.getText().trim();
+            User user = Application.getInstance().getDataAdapter().loadUser(username, password);
+            if (user == null) {
+                JOptionPane.showMessageDialog(null, "This user does not exist!");
+            } else {
+                Application.getInstance().setCurrentUser(user);
+                this.setVisible(false);
+                Application.getInstance().getMainScreen().setVisible(true);
+            }
+            // this.setVisible(false);
+            // Application.getInstance().getMainScreen().setVisible(true);
         }
     }
 }
