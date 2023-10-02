@@ -216,7 +216,7 @@ public class DataAdapter {
                 // String query = "SELECT * FROM LendList";
                 
                 DefaultTableModel model = new DefaultTableModel();
-                PreparedStatement statement = connection.prepareStatement("SELECT LendList.StudentID, Student.StudentName, LendList.BookName, LendList.BorrowDate, LendList.ReturnDate FROM LendList FROM LendList WHERE Student.StudentName = ?");
+                PreparedStatement statement = connection.prepareStatement("SELECT LendList.StudentID, Student.StudentName, LendList.BookName, LendList.BorrowDate, LendList.ReturnDate FROM LendList INNER JOIN Student ON LendList.StudentID = Student.StudentID WHERE Student.StudentName = ?");
                 statement.setString(1, username);
                 ResultSet resultSet = statement.executeQuery();
                 
